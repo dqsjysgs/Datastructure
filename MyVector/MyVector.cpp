@@ -107,9 +107,9 @@ public:
     }
 
     //调试用，后期删掉
-    void printp() {
-        printf("p = %p\n", p);
-    }
+    //void printp() {
+    //    printf("p = %p\n", p);
+    //}
 
 private:
     T *p;//指向数据的指针，下标从0开始用

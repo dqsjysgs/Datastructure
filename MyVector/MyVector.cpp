@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+class Exception {};
+
 template<typename T>
 class MyVector {
 public:
@@ -43,7 +45,7 @@ public:
         //重载<<使得该类的对象可以用cout输出
         cout << '{';
         for (int i = 0; i < v.size - 1; ++i) {
-            out << v.p[i] << ',';
+            out << v.p[i] << ", ";
         }
         if (v.size > 0) {
             out << v.p[v.size - 1];
@@ -54,23 +56,31 @@ public:
 
     void insert(int pos, T data) {
         //将data插入到pos下标位置
-        //TODO: if (pos > size) 抛出异常
-        if (size + 1 > capacity) {
-            doubleCapacity();
+        try {
+            if (pos < 0 || pos > size) throw Exception();
+            if (size + 1 > capacity) {
+                doubleCapacity();
+            }
+            for (int i = size - 1; i >= pos; --i) {
+                p[i + 1] = p[i];
+            }
+            p[pos] = data; size++;
+        } catch (Exception& e) {
+            cout << "Index " << pos << "is not valid!\n";
         }
-        for (int i = size - 1; i >= pos; --i) {
-            p[i + 1] = p[i];
-        }
-        p[pos] = data; size++;
     }
 
     void remove(int pos) {
         //删除pos下标的元素
-        //TODO: if (pos >= size) 抛出异常
-        for (int i = pos; i <= size - 2; ++i) {
-            p[i] = p[i + 1];
+        try {
+            if (pos < 0 || pos >= size) throw Exception();
+            for (int i = pos; i <= size - 2; ++i) {
+                p[i] = p[i + 1];
+            }
+            size--;
+        } catch (Exception& e) {
+            cout << "Index " << pos << " is not valid!\n";
         }
-        size--;
     }
 
     void pushBack(T data) {
@@ -120,13 +130,9 @@ private:
 int main() {
     //一些测试代码
     MyVector<double> test;
-    test.pushBack(0.5);
-    cout << test[0] << endl;
-    cout << test.getSize() << endl;
+    for (int i = 1; i < 10; ++i) test.pushBack(i);
+    test.insert(0, 666);
+    test.remove(2);
     cout << test << endl;
-    test.popBack();
-    cout << test.getSize() << endl;
-    cout << test << endl;
-
     return 0;
 }
